@@ -9,7 +9,7 @@ export const isLoggedIn = async(req, res, next) => {
         const token = req.cookies.JWT || req.headers.authorization?.split(" ")[1];
         if (!token) {
             const error = new ApiError(401, "Unauthorized: No token provided.");
-            return res.status(401).json({ error: error.message });
+            return res.status(401).json(error);
         }
 
         let decodedToken;
@@ -17,7 +17,7 @@ export const isLoggedIn = async(req, res, next) => {
             decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         } catch (err) {
             const error = new ApiError(401, "Unauthorized: Token invalid.");
-            return res.status(401).json({ error: error.message });
+            return res.status(401).json(error);
         }
 
         const user = await db.user.findUnique({
@@ -25,18 +25,20 @@ export const isLoggedIn = async(req, res, next) => {
                 id: decodedToken.id,
             },
             select:{
-                id: true, 
-                role: true, 
-                email: true,
+                id: true,
                 name: true,
+                email: true,
+                role: true,
+                image: true,
+                problem: true,
                 createdAt: true,
-                updatedAt: true,
+                updatedAt: true
             }
         });
 
         if (!user) {
             const error = new ApiError(404, "User not found.");
-            return res.status(404).json({ error: error.message });
+            return res.status(404).json(error);
         }
 
         req.user = user;
@@ -44,7 +46,7 @@ export const isLoggedIn = async(req, res, next) => {
         next();
     } catch (err) {
         logger.error(err);
-        const error = new ApiError(500, "Internal server error.");
+        const error = new ApiError(500, "Error occurred while verifying the logged-in user.");
         res.status(500).json(error);
     }
 }

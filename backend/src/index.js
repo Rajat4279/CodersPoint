@@ -2,10 +2,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser"
+import logger from './logger/index.js';
 
 // import routes files
 import authRoutes from "./routes/auth.route.js";
-import logger from './logger/index.js';
+import problemsRoutes from "./routes/problems.route.js";
 
 // configure dotenv
 dotenv.config({
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/problems", problemsRoutes);
 
 // Start server
 app.listen(port, ()=>{

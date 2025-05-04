@@ -62,7 +62,7 @@ export const register = async(req, res) =>{
         );
     } catch (err) {
         logger.error(err);
-        const error = new ApiError(500, "Internal server error.");
+        const error = new ApiError(500, "Error in registering user.");
         res.status(500).json(error);
     }
 };
@@ -118,7 +118,7 @@ export const login = async(req, res) =>{
         );
     } catch (err) {
         logger.error(err);
-        const error = new ApiError(500, "Internal server error.");
+        const error = new ApiError(500, "Error in logging in user.");
         res.status(500).json(error);
     }
 } 
@@ -138,7 +138,7 @@ export const logout = async(_, res) =>{
         );
     } catch (err) {
         logger.error(err);
-        const error = new ApiError(500, "Internal server error.");
+        const error = new ApiError(500, "Error in logging out user.");
         res.status(500).json(error);
     }
 } 
