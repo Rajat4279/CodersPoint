@@ -19,8 +19,23 @@ export const getJudge0LanguageId = (language) =>{
     return languagesMap[language.toUpperCase()];
 }
 
+export const getJudge0LanguageName = (languageId) =>{
+    const languagesMap = {
+        62: "JAVA",
+        63: "JAVASCRIPT",
+        71: "PYTHON",
+    };
+
+    return languagesMap[languageId];
+}
+
 export const submitBatch = async(submissions) => {
-    const {data} = await axios.post(`${process.env.JUDGE0_API_URL}/submissions/batch?base64_encoded=true`, {submissions}, options);
+    const {data} = await axios.post(`${process.env.JUDGE0_API_URL}/submissions/batch`, {submissions}, {
+        ...options,
+        params:{
+            base64_encoded:false
+        }
+    });
 
     logger.info(`Data: ${data}`);
 
@@ -36,7 +51,7 @@ export const poolBatchResults = async(tokens) => {
         const {data} = await axios.get(`${process.env.JUDGE0_API_URL}/submissions/batch`, {
             params: {
                 tokens: tokens.join(","),
-                base64_encoded: true
+                base64_encoded: false
             },
             ...options
         });
@@ -52,12 +67,3 @@ export const poolBatchResults = async(tokens) => {
         await sleep(1000);
     }
 }
-
-// const options = {
-//     method,
-//     url,
-//     headers: {
-//     "x-rapidapi-key": process.env.RAPID_API_KEY,
-//     "x-rapidapi-host": process.env.RAPID_API_HOST,
-//     },
-// };

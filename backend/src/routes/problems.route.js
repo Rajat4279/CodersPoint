@@ -1,12 +1,12 @@
 import express from "express";
 import { isLoggedIn } from "../middlewares/isLoggedIn.middleware.js";
 import { checkAdmin } from "../middlewares/isAdminCheck.middleware.js";
-import { createProblem, deleteProblemById, getAllProblems, getAllSolvedProblemByUser, getProblemById, updateProblemById } from "../controllers/problem.controller.js";
 
 // create router
 const router = express.Router();
 
 // import controllers
+import { createProblem, deleteProblemById, getAllProblems, getAllSolvedProblemByUser, getProblemById, updateProblemById } from "../controllers/problem.controller.js";
 
 // create routes
 router.route("/create-problem").post(isLoggedIn, checkAdmin, createProblem);

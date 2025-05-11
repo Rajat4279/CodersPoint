@@ -2,6 +2,7 @@ import { getJudge0LanguageId, poolBatchResults, submitBatch } from "../lib/judge
 import ApiResponse from "../lib/api-response.js";
 import ApiError from "../lib/api-error.js";
 import logger from "../logger/index.js";
+import {db} from "../lib/db.js"
 
 export const createProblem = async(req, res) =>{
     try {
@@ -174,6 +175,7 @@ export const updateProblemById = async(req, res) =>{
             // pool the judge0 end point to check whether
             const results = await poolBatchResults(submissionTokens);
 
+            console.log(results);
             // check if all the testcases passed and accepted
             for(let i = 0 ; i < results.length ; i++){
                 const result = results[i];
@@ -240,4 +242,32 @@ export const deleteProblemById = async(req, res) =>{
     }
 }
 
-export const getAllSolvedProblemByUser = async(req, res) =>{}
+export const getAllSolvedProblemByUser = async(req, res) =>{
+    try {
+        const userId = req.user.id;
+
+        const problems = await db.problem.findMany({
+            where:{
+                solvedBy:{
+                    some:{
+                        userId
+                    }
+                }
+            },
+
+            include:{
+                solvedBy:{
+                    where:{
+                        userId
+                    }
+                }
+            }
+        });
+
+        return res.status(200).json(new ApiResponse(200, "Problems solved by user fetched successfully.", problems)); 
+    } catch (err) {
+        logger.error(err);
+        const error = new ApiError(500, "Error in fetching problems solved by user.");
+        res.status(500).json(error);
+    }
+}
