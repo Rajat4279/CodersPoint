@@ -10,11 +10,11 @@ import { createProblem, deleteProblemById, getAllProblems, getAllSolvedProblemBy
 
 // create routes
 router.route("/create-problem").post(isLoggedIn, checkAdmin, createProblem);
-router.route("/get-all-problems").get(isLoggedIn, checkAdmin, getAllProblems);
-router.route("/get-problems/:id").get(isLoggedIn, checkAdmin, getProblemById);
+router.route("/get-all-problems").get(isLoggedIn, getAllProblems);
+router.route("/get-problem/:id").get(isLoggedIn, getProblemById);
 router.route("/update-problems/:id").put(isLoggedIn, checkAdmin, updateProblemById);
 router.route("/delete-problems/:id").delete(isLoggedIn, checkAdmin, deleteProblemById);
-router.route("/get-solved-problems/:id").delete(isLoggedIn, checkAdmin, getAllSolvedProblemByUser);
+router.route("/get-solved-problems").get(isLoggedIn, getAllSolvedProblemByUser);
 
 // export router
 export default router;

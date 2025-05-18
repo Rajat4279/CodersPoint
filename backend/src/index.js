@@ -1,9 +1,9 @@
 // import dependencies
-import express from 'express';
-import dotenv from 'dotenv';
-import cookieParser from "cookie-parser"
-import logger from './logger/index.js';
-import cors from "cors"
+import express from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import logger from "./logger/index.js";
+import cors from "cors";
 
 // import routes files
 import authRoutes from "./routes/auth.route.js";
@@ -22,11 +22,14 @@ const port = process.env.PORT;
 
 // middlewares
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({
-    path:"*"
-}));
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
 
 // routes
 app.use("/api/v1/auth", authRoutes);
@@ -36,6 +39,6 @@ app.use("/api/v1/submission", submissionRoutes);
 app.use("/api/v1/playlist", playlistRoutes);
 
 // Start server
-app.listen(port, ()=>{
+app.listen(port, () => {
     logger.info(`Server is up and running on PORT ${port}`);
 });
