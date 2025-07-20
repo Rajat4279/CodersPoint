@@ -16,6 +16,7 @@ export const useExecutionStore = create((set) => ({
         try {
             set({ isExecuting: true });
 
+            console.log(language_id);
             const res = await axiosInstance.post("/execute-code", {
                 source_code,
                 language_id,

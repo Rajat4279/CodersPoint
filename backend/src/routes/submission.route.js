@@ -8,7 +8,7 @@ const router = express.Router();
 import { getAllSubmission, getSubmissionById, getSubmissionCount } from "../controllers/submission.controller.js";
 
 // create routes
-router.route("/get-all-submission").get(isLoggedIn, getAllSubmission);
+router.route("/get-all-submissions").get(isLoggedIn, getAllSubmission);
 router.route("/get-submission/:problemId").get(isLoggedIn, getSubmissionById);
 router.route("/get-submission-count/:problemId").get(isLoggedIn, getSubmissionCount);
 
