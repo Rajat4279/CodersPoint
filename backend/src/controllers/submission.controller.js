@@ -38,13 +38,13 @@ export const getSubmissionById = async (req, res) => {
             .json(
                 new ApiResponse(
                     200,
-                    "Successfully fetched a submissions.",
+                    "Successfully fetched submissions.",
                     submissions
                 )
             );
     } catch (err) {
         logger.error(err);
-        const error = new ApiError(500, "Error in fetching a submission.");
+        const error = new ApiError(500, "Error in fetching submissions.");
         res.status(500).json(error);
     }
 };

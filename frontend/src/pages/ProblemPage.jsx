@@ -9,7 +9,6 @@ import {
     Share2,
     Clock,
     ChevronRight,
-    BookOpen,
     Terminal,
     Code2,
     Users,
@@ -42,7 +41,7 @@ const ProblemPage = () => {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [testcases, setTestCases] = useState([]);
 
-    const { executeCode, submission, isExecuting } = useExecutionStore();
+    const { executeCode, submissionData, isExecuting } = useExecutionStore();
 
     useEffect(() => {
         getProblemById(id);
@@ -53,7 +52,7 @@ const ProblemPage = () => {
         if (problem) {
             setCode(
                 problem.codeSnippets?.[selectedLanguage] ||
-                    submission?.sourceCode ||
+                    submissionData?.sourceCode ||
                     ""
             );
             setTestCases(
@@ -71,7 +70,6 @@ const ProblemPage = () => {
         }
     }, [activeTab, id]);
 
-    console.log("submission", submissions);
 
     const handleLanguageChange = (e) => {
         const lang = e.target.value;
@@ -371,8 +369,8 @@ const ProblemPage = () => {
 
                 <div className="card bg-base-100 shadow-xl mt-6">
                     <div className="card-body">
-                        {submission ? (
-                            <Submission submission={submission} />
+                        {submissionData ? (
+                            <Submission submission={submissionData} />
                         ) : (
                             <>
                                 <div className="flex items-center justify-between mb-6">

@@ -22,8 +22,8 @@ const SubmissionResults = ({ submission }) => {
             .map((t) => parseFloat(t)) // remove ' s' using parseFloat
             .reduce((a, b) => a + b, 0) / timeArr.length;
 
-    const passedTests = submission.testCases.filter((tc) => tc.passed).length;
-    const totalTests = submission.testCases.length;
+    const passedTests = submission.testcases.filter((tc) => tc.passed).length;
+    const totalTests = submission.testcases.length;
     const successRate = (passedTests / totalTests) * 100;
 
     return (
@@ -95,7 +95,7 @@ const SubmissionResults = ({ submission }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {submission.testCases.map((testCase) => (
+                                {submission.testcases.map((testCase) => (
                                     <tr key={testCase.id}>
                                         <td>
                                             {testCase.passed ? (

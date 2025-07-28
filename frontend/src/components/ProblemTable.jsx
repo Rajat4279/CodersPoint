@@ -1,27 +1,37 @@
 import React, { useState, useMemo } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
+import { Bookmark, PencilIcon, Trash, TrashIcon, Plus } from "lucide-react";
+import { useActions } from "../store/useActionStore";
+import AddToPlaylistModal from "./AddToPlaylistModal";
+import CreatePlaylistModal from "./CreatePlaylistModal";
+import { usePlaylistStore } from "../store/usePlaylistStore";
 
-import { Bookmark, PencilIcon, TrashIcon, Plus } from "lucide-react";
-
-const ProblemTable = ({ problems }) => {
+const ProblemsTable = ({ problems }) => {
     const { authUser } = useAuthStore();
-
+    const { onDeleteProblem } = useActions();
+    const { createPlaylist } = usePlaylistStore();
     const [search, setSearch] = useState("");
     const [difficulty, setDifficulty] = useState("ALL");
     const [selectedTag, setSelectedTag] = useState("ALL");
     const [currentPage, setCurrentPage] = useState(1);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
+        useState(false);
+    const [selectedProblemId, setSelectedProblemId] = useState(null);
 
+    // Extract all unique tags from problems
     const allTags = useMemo(() => {
         if (!Array.isArray(problems)) return [];
-
         const tagsSet = new Set();
-
         problems.forEach((p) => p.tags?.forEach((t) => tagsSet.add(t)));
-
         return Array.from(tagsSet);
     }, [problems]);
 
+    // Define allowed difficulties
+    const difficulties = ["EASY", "MEDIUM", "HARD"];
+
+    // Filter problems based on search, difficulty, and tags
     const filteredProblems = useMemo(() => {
         return (problems || [])
             .filter((problem) =>
@@ -37,31 +47,44 @@ const ProblemTable = ({ problems }) => {
             );
     }, [problems, search, difficulty, selectedTag]);
 
+    // Pagination logic
     const itemsPerPage = 5;
     const totalPages = Math.ceil(filteredProblems.length / itemsPerPage);
     const paginatedProblems = useMemo(() => {
         return filteredProblems.slice(
-            (currentPage - 1) * itemsPerPage, // 1 * 5 = 5 ( starting index = 0)
-            currentPage * itemsPerPage // 1 * 5  = (0 , 10)
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage
         );
     }, [filteredProblems, currentPage]);
 
-    const difficulties = ["EASY", "MEDIUM", "HARD"];
+    const handleDelete = (id) => {
+        onDeleteProblem(id);
+    };
 
-    const handleDelete = () => {};
+    const handleCreatePlaylist = async (data) => {
+        await createPlaylist(data);
+    };
 
-    const handleAddToPlaylist = () => {};
+    const handleAddToPlaylist = (problemId) => {
+        setSelectedProblemId(problemId);
+        setIsAddToPlaylistModalOpen(true);
+    };
 
     return (
         <div className="w-full max-w-6xl mx-auto mt-10">
+            {/* Header with Create Playlist Button */}
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Problems</h2>
-                <button className="btn btn-primary gap-2" onClick={() => {}}>
+                <button
+                    className="btn btn-primary gap-2"
+                    onClick={() => setIsCreateModalOpen(true)}
+                >
                     <Plus className="w-4 h-4" />
                     Create Playlist
                 </button>
             </div>
 
+            {/* Filters */}
             <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
                 <input
                     type="text"
@@ -97,9 +120,10 @@ const ProblemTable = ({ problems }) => {
                 </select>
             </div>
 
+            {/* Table */}
             <div className="overflow-x-auto rounded-xl shadow-md">
                 <table className="table table-zebra table-lg bg-base-200 text-base-content">
-                    <thead className="bg-base-200">
+                    <thead className="bg-base-300">
                         <tr>
                             <th>Solved</th>
                             <th>Title</th>
@@ -111,10 +135,9 @@ const ProblemTable = ({ problems }) => {
                     <tbody>
                         {paginatedProblems.length > 0 ? (
                             paginatedProblems.map((problem) => {
-                                const isSolved = Array.isArray(problem.solvedBy) && problem.solvedBy.some(
+                                const isSolved = problem.solvedBy.some(
                                     (user) => user.userId === authUser?.id
                                 );
-
                                 return (
                                     <tr key={problem.id}>
                                         <td>
@@ -216,7 +239,7 @@ const ProblemTable = ({ problems }) => {
                 </table>
             </div>
 
-            {/*  */}
+            {/* Pagination */}
             <div className="flex justify-center mt-6 gap-2">
                 <button
                     className="btn btn-sm"
@@ -236,8 +259,21 @@ const ProblemTable = ({ problems }) => {
                     Next
                 </button>
             </div>
+
+            {/* Modals */}
+            <CreatePlaylistModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSubmit={handleCreatePlaylist}
+            />
+
+            <AddToPlaylistModal
+                isOpen={isAddToPlaylistModalOpen}
+                onClose={() => setIsAddToPlaylistModalOpen(false)}
+                problemId={selectedProblemId}
+            />
         </div>
     );
 };
 
-export default ProblemTable;
+export default ProblemsTable;

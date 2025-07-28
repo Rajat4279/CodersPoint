@@ -32,7 +32,8 @@ export const useSubmissionStore = create((set) => ({
                 `/submission/get-submission/${problemId}`
             );
 
-            set({ submission: res.data.submissions });
+            set({ submission: res.data.data });
+            // console.log(res.data)
         } catch (error) {
             console.log("Error getting submissions for problem", error);
 
@@ -45,10 +46,11 @@ export const useSubmissionStore = create((set) => ({
     getSubmissionCountForProblem: async (problemId) => {
         try {
             const res = await axiosInstance.get(
-                `/submission/get-submissions-count/${problemId}`
+                `/submission/get-submission-count/${problemId}`
             );
 
-            set({ submissionCount: res.data.count });
+            set({ submissionCount: res.data.data });
+            console.log(res.data);
         } catch (error) {
             console.log("Error getting submission count for problem", error);
             toast.error("Error getting submission count for problem");

@@ -8,6 +8,7 @@ import {
 
 const SubmissionsList = ({ submissions, isLoading }) => {
     // Helper function to safely parse JSON strings
+    console.log(submissions);
     const safeParse = (data) => {
         try {
             return JSON.parse(data);
